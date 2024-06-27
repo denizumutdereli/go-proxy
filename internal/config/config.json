@@ -1,0 +1,16 @@
+{
+  "APP_NAME": "GoProxy",
+  "GO_SERVICE_PORT": "3003",
+  "ETCD_URL": "localhost:2379",
+  "SYSLOG": "false",
+  "CORS_WHITELIST": "*",
+  "ALLOW_ALL_ORIGINS": false,
+  "ALLOWED_ORIGINS": ["http://localhost"],
+  "ALLOWED_REST_METHODS": ["GET"],
+  "ALLOWED_REST_HEADERS": ["Origin", "Content-Length", "Content-Type"],
+  "PER_REQUEST_LIMIT": "100",
+  "ALLOWED_IP_RANGES": "127.0.0.1/24,192.168.0.1/24",
+  "ALLOWED_SPECIFIC_IPS": "127.0.0.1",
+  "SUB_SERVICES":"http://127.0.0.1:3000,http://127.0.0.1:3001",
+  "CACHE_EXPIRY":30
+}

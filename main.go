@@ -48,7 +48,7 @@ func getProxy(r *http.Request) *httputil.ReverseProxy {
 		return proxies[cachedURL.(string)]
 	}
 
-	selectedURL := urls[rand.Intn(len(urls))] // choose a URL randomly
+	selectedURL := urls[rand.Intn(len(urls))]
 	proxy := proxies[selectedURL]
 	requestCache.Set(requestIdentifier, selectedURL, cache.DefaultExpiration)
 	return proxy
@@ -109,7 +109,6 @@ func main() {
 
 	router := mux.NewRouter()
 
-	// Register the API handler with rate limiting
 	router.Handle("/", tollbooth.LimitFuncHandler(rateLimiter, handleApiRequest)).Methods("GET")
 
 	var syslogger *srslog.Writer
@@ -121,7 +120,6 @@ func main() {
 		}
 	}
 
-	// Register the proxy as a handler for other routes with rate limiting
 	router.PathPrefix("/").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		httpError := tollbooth.LimitByRequest(rateLimiter, w, r)
 		if httpError != nil {
@@ -131,12 +129,10 @@ func main() {
 			return
 		}
 
-		// Sanitize the request path
 		r.URL.Path = path.Clean(r.URL.Path)
 
 		proxy := getProxy(r)
 
-		// Log content
 		log := fmt.Sprintf("App: %s and proxy url: %s%s", appName, r.Host, r.URL.Path)
 		if useSyslog {
 			syslogger.Info(log)
@@ -158,7 +154,7 @@ func main() {
 
 	https := os.Getenv("HTTPS") == "true"
 
-	rand.Seed(time.Now().UnixNano()) // seeding for random selection
+	rand.Seed(time.Now().UnixNano())
 
 	if https {
 		log.Printf("Go service listening on HTTPS %s", goServicePort)
